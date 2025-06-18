@@ -4,21 +4,13 @@ on:
   workflow_dispatch:
     inputs:
       sha:
-        description: 'uazo/cromite SHA'
-        required: true
+        description: 'li001test/cromite SHA to build. Defaults to the commit that triggered the workflow.'
+        required: false
         default: ''
-      target_os:
-        description: 'targetos [android/win/linux/all]'
-        required: true
-        default: 'all'
       build:
-        description: 'android arch [arm/arm64/x64/all]'
+        description: 'android arch [arm/arm64/all]'
         required: true
         default: 'all'
-      type:
-        description: 'runner? [dev/ci]'
-        required: true
-        default: 'ci'
       debug:
         description: 'debug? [true/false]'
         required: true
@@ -29,26 +21,19 @@ on:
         default: 'false'
 
 env:
-  CROMITE_SHA: ${{ github.event.inputs.sha }}
-  REMOVEDOCKERSUPPORT: true
-  USELOCALIMAGE: true
+  CROMITE_SHA: ${{ github.event.inputs.sha || github.sha }}
 
 jobs:
   check_images:
-    runs-on: ${{ github.event.inputs.type }}
+    runs-on: depot-ci
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
+          repository: li001test/cromite
           path: cromite
-          ref: ${{ github.event.inputs.sha }}
+          ref: ${{ env.CROMITE_SHA }}
           fetch-depth: 1
-
-      - name: Download regctl
-        shell: bash
-        run: |
-          curl -L https://github.com/regclient/regclient/releases/latest/download/regctl-linux-amd64 >regctl
-          chmod 755 regctl
 
       - name: Get current chromium version
         shell: bash
@@ -63,159 +48,78 @@ jobs:
       - name: Building build-deps container ${{ env.VERSION }}
         shell: bash
         run: |
-          docker pull uazo/build-deps:$VERSION || true
-          IS_PRESENT=$(docker inspect --type=image uazo/build-deps:$VERSION > /dev/null ; echo $?)
-          if [ $IS_PRESENT -ne "0" ]; then
-            IS_PRESENT=$(./regctl image inspect uazo/build-deps:$VERSION > /dev/null ; echo $?)
-            if [ $IS_PRESENT -ne "0" ]; then
-              DOCKER_BUILDKIT=1 docker build -t uazo/build-deps:$VERSION \
-                --progress plain \
-                --build-arg VERSION=$VERSION \
-                --build-arg HTTP_PROXY="$PROXY_ADDR" \
-                --no-cache \
-                cromite/tools/images/build-deps/.
-            fi
-          fi
+          docker pull uazo/build-deps:$VERSION || \
+            DOCKER_BUILDKIT=1 docker build -t uazo/build-deps:$VERSION \
+              --progress plain \
+              --build-arg VERSION=$VERSION \
+              --build-arg HTTP_PROXY="$PROXY_ADDR" \
+              --no-cache \
+              cromite/tools/images/build-deps/.
 
       - name: Building chromium container ${{ env.VERSION }}
         shell: bash
         run: |
-          docker pull uazo/chromium:$VERSION || true
-          IS_PRESENT=$(docker inspect --type=image uazo/chromium:$VERSION > /dev/null ; echo $?)
-          if [ $IS_PRESENT -ne "0" ]; then
-            IS_PRESENT=$(./regctl image inspect uazo/chromium:$VERSION > /dev/null ; echo $?)
-            if [ $IS_PRESENT -ne "0" ]; then
-              DOCKER_BUILDKIT=1 docker build -t uazo/chromium:$VERSION \
-                --progress plain \
-                --build-arg VERSION=$VERSION \
-                --build-arg HTTP_PROXY="$PROXY_ADDR" \
-                cromite/tools/images/chr-source/.
-            fi
-          fi
+          docker pull uazo/chromium:$VERSION || \
+            DOCKER_BUILDKIT=1 docker build -t uazo/chromium:$VERSION \
+              --progress plain \
+              --build-arg VERSION=$VERSION \
+              --build-arg HTTP_PROXY="$PROXY_ADDR" \
+              cromite/tools/images/chr-source/.
 
       - name: Building cromite container ${{ env.VERSION }}-${{ env.CROMITE_SHA }}
         shell: bash
         run: |
-          docker pull uazo/cromite:$VERSION-$CROMITE_SHA || true
-          IS_PRESENT=$(docker inspect --type=image uazo/cromite:$VERSION-$CROMITE_SHA > /dev/null ; echo $?)
-          if [ $IS_PRESENT -ne "0" ]; then
-            IS_PRESENT=$(./regctl image inspect uazo/cromite:$VERSION-$CROMITE_SHA > /dev/null ; echo $?)
-            if [ $IS_PRESENT -ne "0" ]; then
-              DOCKER_BUILDKIT=1 docker build -t uazo/cromite:$VERSION-$CROMITE_SHA --progress plain \
-                --build-arg CROMITE_SHA=$CROMITE_SHA \
-                --build-arg VERSION=$VERSION \
-                --build-arg HTTP_PROXY="$PROXY_ADDR" \
-                cromite/tools/images/cromite-source/.
-            fi
-          fi
+          docker pull li001test/cromite:$VERSION-$CROMITE_SHA || \
+            DOCKER_BUILDKIT=1 docker build -t li001test/cromite:$VERSION-$CROMITE_SHA --progress plain \
+              --build-arg CROMITE_SHA=$CROMITE_SHA \
+              --build-arg VERSION=$VERSION \
+              --build-arg HTTP_PROXY="$PROXY_ADDR" \
+              cromite/tools/images/cromite-source/.
 
       - name: Building cromite-build container ${{ env.VERSION }}-${{ env.CROMITE_SHA }}
         shell: bash
         run: |
-          docker pull uazo/cromite-build:$VERSION-$CROMITE_SHA || true
-          IS_PRESENT=$(docker inspect --type=image uazo/cromite-build:$VERSION-$CROMITE_SHA > /dev/null ; echo $?)
-          if [ $IS_PRESENT -ne "0" ]; then
-            IS_PRESENT=$(./regctl image inspect uazo/cromite-build:$VERSION-$CROMITE_SHA > /dev/null ; echo $?)
-            if [ $IS_PRESENT -ne "0" ]; then
-              DOCKER_BUILDKIT=1 docker build -t uazo/cromite-build:$VERSION-$CROMITE_SHA --progress plain \
-                --build-arg CROMITE_SHA=$CROMITE_SHA \
-                --build-arg VERSION=$VERSION \
-                --build-arg HTTP_PROXY="$PROXY_ADDR" \
-                --no-cache \
-                cromite/tools/images/cromite-build/.
-            fi
-          fi
-
-      - name: Get uazo/cromite-build from docker hub if present
-        shell: bash
-        run: |
-          IS_PRESENT=$(./regctl image inspect uazo/cromite-build:$VERSION-$CROMITE_SHA > /dev/null ; echo $?)
-          if [ $IS_PRESENT -eq "0" ]; then
-            docker pull uazo/cromite-build:$VERSION-$CROMITE_SHA
-          fi
+          docker pull li001test/cromite-build:$VERSION-$CROMITE_SHA || \
+            DOCKER_BUILDKIT=1 docker build -t li001test/cromite-build:$VERSION-$CROMITE_SHA --progress plain \
+              --build-arg CROMITE_SHA=$CROMITE_SHA \
+              --build-arg VERSION=$VERSION \
+              --build-arg HTTP_PROXY="$PROXY_ADDR" \
+              --no-cache \
+              cromite/tools/images/cromite-build/.
 
       - name: Mark image to build
         shell: bash
         run: |
-          IS_PRESENT=$(docker inspect --type=image uazo/cromite-build:build > /dev/null ; echo $?)
-          if [ $IS_PRESENT -eq "0" ]; then
-            docker rmi uazo/cromite-build:build
-          fi
-          docker tag uazo/cromite-build:$VERSION-$CROMITE_SHA uazo/cromite-build:build
+          docker rmi li001test/cromite-build:build || true
+          docker tag li001test/cromite-build:$VERSION-$CROMITE_SHA li001test/cromite-build:build
 
-  build:
-    runs-on: ${{ github.event.inputs.type }}
+  build_arm64:
+    runs-on: depot-ci
     needs: check_images
-    if: success()
+    if: success() && (github.event.inputs.build == 'arm64' || github.event.inputs.build == 'all')
     timeout-minutes: 1440
 
     container:
-      image: uazo/cromite-build:build
+      image: li001test/cromite-build:build
       env:
-        REMOVEDOCKERSUPPORT: true # CUSTOM RUNNER: remove sharing of docker socket
-        USELOCALIMAGE: true       # CUSTOM RUNNER: permit use of local images
-        USEINTERNALNETWORK: true  # CUSTOM RUNNER: create the docker network as internal
         WORKSPACE: /home/lg/working_dir
-        # kythe
-        KYTHE_CORPUS: chromium.googlesource.com/chromium/src
-        KYTHE_ROOT_DIRECTORY: /home/lg/working_dir/chromium/src
-        KYTHE_OUTPUT_DIRECTORY: /home/lg/working_dir/chromium/src/out/arm64/kythe
-        # cross build
-        DEPOT_TOOLS_WIN_TOOLCHAIN_BASE_URL: /win_sdk/sdks/Win11SDK_10.0.26100.0/
-        WINDOWSSDKDIR: "/win_sdk/sdks/Win11SDK_10.0.26100.0/Windows Kits/10/"
-        GYP_MSVS_OVERRIDE_PATH: /win_sdk/sdks/Win11SDK_10.0.26100.0/
         # compile in debug mode
         TARGET_ISDEBUG: ${{ github.event.inputs.debug }}
-        TARGET_OS: ${{ github.event.inputs.target_os }}
         USE_KEYSTORE: true
         KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
         CROMITE_PREF_HASH_SEED_BIN: ${{ secrets.CROMITE_PREF_HASH_SEED_BIN }}
-      volumes:
-        - /storage/images/${{ github.event.inputs.sha }}/android/${{ github.event.inputs.debug }}/arm:/home/lg/working_dir/chromium/src/out/arm
-        - /storage/images/${{ github.event.inputs.sha }}/android/${{ github.event.inputs.debug }}/arm64:/home/lg/working_dir/chromium/src/out/arm64
-        - /storage/images/${{ github.event.inputs.sha }}/android/${{ github.event.inputs.debug }}/x64:/home/lg/working_dir/chromium/src/out/x64
-        - /storage/images/${{ github.event.inputs.sha }}/linux/${{ github.event.inputs.debug }}/lin64:/home/lg/working_dir/chromium/src/out/lin64
-        - /storage/images/${{ github.event.inputs.sha }}/win/x64:/home/lg/working_dir/chromium/src/out/win64
-        - /tmp/proxy:/tmp/proxy
-        - /win_sdk:/win_sdk
 
     steps:
       - name: Prepare Build Container
         shell: bash
         run: |
-          # set workspace paths
           PATH=$WORKSPACE/chromium/src/third_party/llvm-build/Release+Asserts/bin:$WORKSPACE/depot_tools/:/usr/local/go/bin:$WORKSPACE/mtool/bin:$PATH
           cd $WORKSPACE
 
-          # reset proxy env
-          HTTP_PROXY=
-          HTTPS_PROXY=
-          http_proxy=
-          https_proxy=
-
           # set out folder permissions
-          test -d chromium/src/out/arm || sudo mkdir -p chromium/src/out/arm && \
-            sudo chown lg chromium/src/out &&
-            sudo chown lg chromium/src/out/arm
-
-          test -d chromium/src/out/arm64 || sudo mkdir -p chromium/src/out/arm64 && \
+          sudo mkdir -p chromium/src/out/arm64 && \
             sudo chown lg chromium/src/out &&
             sudo chown lg chromium/src/out/arm64
-
-          test -d chromium/src/out/win64 || sudo mkdir -p chromium/src/out/win64 && \
-            sudo chown lg chromium/src/out &&
-            sudo chown lg chromium/src/out/win64
-
-          test -d chromium/src/out/x64 || sudo mkdir -p chromium/src/out/x64 && \
-            sudo chown lg chromium/src/out &&
-            sudo chown lg chromium/src/out/x64
-
-          test -d chromium/src/out/lin64 || sudo mkdir -p chromium/src/out/lin64 && \
-            sudo chown lg chromium/src/out &&
-            sudo chown lg chromium/src/out/lin64
-            
-          # make kythe output directory
-          test -d $KYTHE_OUTPUT_DIRECTORY || mkdir -p $KYTHE_OUTPUT_DIRECTORY
 
           sudo mkdir -p /run/user/1000/
           sudo chown lg /run/user/1000/
@@ -232,72 +136,18 @@ jobs:
           # bootstrap python3 for gn
           echo ../../../../../usr/bin >$WORKSPACE/depot_tools/python3_bin_reldir.txt
 
-      - name: Build Cromite Android x64
-        if: ${{ (github.event.inputs.target_os == 'android' || github.event.inputs.target_os == 'all') && (github.event.inputs.build == 'x64' || github.event.inputs.build == 'all') }}
-        shell: bash
-        run: |
-          PATH=$WORKSPACE/chromium/src/third_party/llvm-build/Release+Asserts/bin:$WORKSPACE/depot_tools/:/usr/local/go/bin:$WORKSPACE/mtool/bin:$PATH
-          cd $WORKSPACE/chromium/src
-
-          echo "::group::-------- gn gen"
-          gn gen --args="target_os = \"android\" $(cat /home/lg/working_dir/cromite/build/cromite.gn_args) target_cpu = \"x64\" " out/x64
-          echo "::endgroup::"
-
-          echo "::group::-------- gn args"
-          gn args out/x64/ --list --short
-          gn args out/x64/ --list >out/x64/gn_list
-          echo "::endgroup::"
-
-          ninja -C out/x64 chrome_public_bundle
-          ninja -C out/x64 chrome_public_apk
-
-          cp ../../cromite/build/RELEASE out/x64
-
-      - name: Get ninja logs Android x64
-        if: ${{ (github.event.inputs.target_os == 'android' || github.event.inputs.target_os == 'all') && (github.event.inputs.build == 'x64' || github.event.inputs.build == 'all') }}
-        shell: bash
-        run: |
-          cd $WORKSPACE
-          $WORKSPACE/ninjatracing/ninjatracing -a $WORKSPACE/chromium/src/out/x64/.ninja_log >$WORKSPACE/chromium/src/out/x64/ninja_log_trace.json
-          python3 $WORKSPACE/chromium/src/third_party/catapult/tracing/bin/trace2html $WORKSPACE/chromium/src/out/x64/ninja_log_trace.json
-
-      - name: Build Cromite Windows x64
-        if: ${{ github.event.inputs.target_os == 'win' || github.event.inputs.target_os == 'all' }}
-        shell: bash
-        run: |
-          PATH=$WORKSPACE/chromium/src/third_party/llvm-build/Release+Asserts/bin:$WORKSPACE/depot_tools/:/usr/local/go/bin:$WORKSPACE/mtool/bin:$PATH
-          cd $WORKSPACE/chromium/src
-
-          echo "::group::-------- gn gen"
-          gn gen --args="target_os = \"win\" $(cat /home/lg/working_dir/cromite/build/cromite.gn_args) target_cpu = \"x64\" " out/win64
-          echo "::endgroup::"
-
-          echo "::group::-------- gn args"
-          gn args out/win64/ --list --short
-          gn args out/win64/ --list >out/win64/gn_list
-          echo "::endgroup::"
-
-          ninja -C out/win64 chrome
-
-          cp ../../cromite/build/RELEASE out/win64
-
-      - name: Get ninja logs Windows x64
-        if: ${{ github.event.inputs.target_os == 'win' || github.event.inputs.target_os == 'all' }}
-        shell: bash
-        run: |
-          cd $WORKSPACE
-          $WORKSPACE/ninjatracing/ninjatracing -a $WORKSPACE/chromium/src/out/win64/.ninja_log >$WORKSPACE/chromium/src/out/win64/ninja_log_trace.json
-          python3 $WORKSPACE/chromium/src/third_party/catapult/tracing/bin/trace2html $WORKSPACE/chromium/src/out/win64/ninja_log_trace.json
-
       - name: Build Cromite Android arm64
-        if: ${{ (github.event.inputs.target_os == 'android' || github.event.inputs.target_os == 'all') && (github.event.inputs.build == 'arm64' || github.event.inputs.build == 'all') }}
         shell: bash
         run: |
           PATH=$WORKSPACE/chromium/src/third_party/llvm-build/Release+Asserts/bin:$WORKSPACE/depot_tools/:/usr/local/go/bin:$WORKSPACE/mtool/bin:$PATH
           cd $WORKSPACE/chromium/src
 
           echo "::group::-------- gn gen"
-          gn gen --args="target_os = \"android\" $(cat /home/lg/working_dir/cromite/build/cromite.gn_args) target_cpu = \"arm64\" " out/arm64
+          GN_ARGS="target_os = \"android\" $(cat /home/lg/working_dir/cromite/build/cromite.gn_args) target_cpu = \"arm64\""
+          if [[ "${{ github.event.inputs.clangd }}" == "true" ]]; then
+            GN_ARGS="$GN_ARGS export_compile_commands=true"
+          fi
+          gn gen --args="$GN_ARGS" out/arm64
           echo "::endgroup::"
 
           echo "::group::-------- gn args"
@@ -311,7 +161,7 @@ jobs:
           cp ../../cromite/build/RELEASE out/arm64
 
       - name: Get ninja logs Android arm64
-        if: ${{ (github.event.inputs.target_os == 'android' || github.event.inputs.target_os == 'all') && (github.event.inputs.build == 'arm64' || github.event.inputs.build == 'all') }}
+        if: always()
         shell: bash
         run: |
           cd $WORKSPACE
@@ -319,7 +169,6 @@ jobs:
           python3 $WORKSPACE/chromium/src/third_party/catapult/tracing/bin/trace2html $WORKSPACE/chromium/src/out/arm64/ninja_log_trace.json
 
       - name: Generate breakpad symbols for Android arm64
-        if: ${{ (github.event.inputs.target_os == 'android' || github.event.inputs.target_os == 'all') && (github.event.inputs.build == 'arm64' || github.event.inputs.build == 'all') }}
         shell: bash
         run: |
           PATH=$WORKSPACE/chromium/src/third_party/llvm-build/Release+Asserts/bin:$WORKSPACE/depot_tools/:/usr/local/go/bin:$WORKSPACE/mtool/bin:$PATH
@@ -336,7 +185,7 @@ jobs:
           echo "::endgroup::"
 
       - name: Generate Supersize data for Android arm64
-        if: ${{ github.event.inputs.debug == 'false' && (github.event.inputs.target_os == 'android' || github.event.inputs.target_os == 'all') && (github.event.inputs.build == 'arm64' || github.event.inputs.build == 'all') }}
+        if: ${{ github.event.inputs.debug == 'false' }}
         shell: bash
         run: |
           PATH=$WORKSPACE/chromium/src/third_party/llvm-build/Release+Asserts/bin:$WORKSPACE/depot_tools/:/usr/local/go/bin:$WORKSPACE/mtool/bin:$PATH
@@ -344,8 +193,75 @@ jobs:
 
           tools/binary_size/supersize archive out/arm64/chrome.size --apk-file out/arm64/apks/ChromePublic.apk -v
 
+      - name: Generate clangd index for Android arm64
+        if: ${{ github.event.inputs.clangd == 'true' }}
+        shell: bash
+        run: |
+          PATH=$WORKSPACE/chromium/src/third_party/llvm-build/Release+Asserts/bin:$WORKSPACE/depot_tools/:/usr/local/go/bin:$WORKSPACE/mtool/bin:$PATH
+          cd $WORKSPACE/chromium/src
+          echo "::group::-------- generating clangd index"
+          /home/lg/working_dir/clangd_snapshot_20250518/bin/clangd-indexer --executor=all-TUs out/arm64/compile_commands.json >out/arm64/cromite.idx
+          echo "::endgroup::"
+
+      - name: Upload artifact Android arm64
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cromite-android-arm64
+          if-no-files-found: ignore
+          path: |
+            /home/lg/working_dir/chromium/src/out/arm64/apks/ChromePublic.apk
+            /home/lg/working_dir/chromium/src/out/arm64/chrome.size
+            /home/lg/working_dir/chromium/src/out/arm64/gn_list
+            /home/lg/working_dir/chromium/src/out/arm64/ninja_log_trace.html
+            /home/lg/working_dir/chromium/src/out/arm64/symbols/
+            /home/lg/working_dir/chromium/src/out/arm64/cromite.idx
+            /home/lg/working_dir/chromium/src/out/arm64/RELEASE
+
+  build_arm:
+    runs-on: depot-ci
+    needs: check_images
+    if: success() && (github.event.inputs.build == 'arm' || github.event.inputs.build == 'all')
+    timeout-minutes: 1440
+
+    container:
+      image: li001test/cromite-build:build
+      env:
+        WORKSPACE: /home/lg/working_dir
+        # compile in debug mode
+        TARGET_ISDEBUG: ${{ github.event.inputs.debug }}
+        USE_KEYSTORE: true
+        KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+        CROMITE_PREF_HASH_SEED_BIN: ${{ secrets.CROMITE_PREF_HASH_SEED_BIN }}
+
+    steps:
+      - name: Prepare Build Container
+        shell: bash
+        run: |
+          PATH=$WORKSPACE/chromium/src/third_party/llvm-build/Release+Asserts/bin:$WORKSPACE/depot_tools/:/usr/local/go/bin:$WORKSPACE/mtool/bin:$PATH
+          cd $WORKSPACE
+
+          # set out folder permissions
+          sudo mkdir -p chromium/src/out/arm && \
+            sudo chown lg chromium/src/out &&
+            sudo chown lg chromium/src/out/arm
+
+          sudo mkdir -p /run/user/1000/
+          sudo chown lg /run/user/1000/
+          sudo chmod g-rxw /run/user/1000/
+          sudo chmod o-rxw /run/user/1000/
+
+          # prepare keystore
+          echo "::group::-------- prepare keystore"
+          cd $WORKSPACE
+          echo "${{ secrets.KEYSTORE }}" > cromite.keystore.asc
+          gpg --homedir ./ -d --passphrase "${{ secrets.KEYSTORE_PASSPHRASE }}" --batch cromite.keystore.asc > cromite.keystore
+          echo "::endgroup::"
+
+          # bootstrap python3 for gn
+          echo ../../../../../usr/bin >$WORKSPACE/depot_tools/python3_bin_reldir.txt
+
       - name: Build Cromite Android arm
-        if: ${{ (github.event.inputs.target_os == 'android' || github.event.inputs.target_os == 'all') && (github.event.inputs.build == 'arm' || github.event.inputs.build == 'all') }}
         shell: bash
         run: |
           PATH=$WORKSPACE/chromium/src/third_party/llvm-build/Release+Asserts/bin:$WORKSPACE/depot_tools/:/usr/local/go/bin:$WORKSPACE/mtool/bin:$PATH
@@ -366,52 +282,21 @@ jobs:
           cp ../../cromite/build/RELEASE out/arm
 
       - name: Get ninja logs Android arm
-        if: ${{ (github.event.inputs.target_os == 'android' || github.event.inputs.target_os == 'all') && (github.event.inputs.build == 'arm' || github.event.inputs.build == 'all') }}
+        if: always()
         shell: bash
         run: |
           cd $WORKSPACE
           $WORKSPACE/ninjatracing/ninjatracing -a $WORKSPACE/chromium/src/out/arm/.ninja_log >$WORKSPACE/chromium/src/out/arm/ninja_log_trace.json
           python3 $WORKSPACE/chromium/src/third_party/catapult/tracing/bin/trace2html $WORKSPACE/chromium/src/out/arm/ninja_log_trace.json
 
-      - name: Build Cromite Linux 64
-        if: ${{ (github.event.inputs.target_os == 'linux' || github.event.inputs.target_os == 'all') }}
-        shell: bash
-        run: |
-          PATH=$WORKSPACE/chromium/src/third_party/llvm-build/Release+Asserts/bin:$WORKSPACE/depot_tools/:/usr/local/go/bin:$WORKSPACE/mtool/bin:$PATH
-          cd $WORKSPACE/chromium/src
-
-          echo "::group::-------- gn gen"
-          gn gen --args="target_os = \"linux\" $(cat /home/lg/working_dir/cromite/build/cromite.gn_args) target_cpu = \"x64\" " out/lin64
-          echo "::endgroup::"
-
-          echo "::group::-------- gn args"
-          gn args out/lin64/ --list --short
-          gn args out/lin64/ --list >out/lin64/gn_list
-          echo "::endgroup::"
-
-          ninja -C out/lin64 chrome chrome_sandbox
-
-          cp ../../cromite/build/RELEASE out/lin64
-
-      - name: Get ninja logs Linux 64
-        if: ${{ (github.event.inputs.target_os == 'linux' || github.event.inputs.target_os == 'all') }}
-        shell: bash
-        run: |
-          cd $WORKSPACE
-          $WORKSPACE/ninjatracing/ninjatracing -a $WORKSPACE/chromium/src/out/lin64/.ninja_log >$WORKSPACE/chromium/src/out/lin64/ninja_log_trace.json
-          python3 $WORKSPACE/chromium/src/third_party/catapult/tracing/bin/trace2html $WORKSPACE/chromium/src/out/lin64/ninja_log_trace.json
-
-      - name: Generate clangd index for Android arm64
-        if: ${{ github.event.inputs.clangd == 'true' }}
-        shell: bash
-        run: |
-          PATH=$WORKSPACE/chromium/src/third_party/llvm-build/Release+Asserts/bin:$WORKSPACE/depot_tools/:/usr/local/go/bin:$WORKSPACE/mtool/bin:$PATH
-          cd $WORKSPACE/chromium/src
-
-          test -f out/arm64/cromite.idx || \
-            cp -r out/arm64 out/clangd && \
-            gn gen --args="import(\"/home/lg/working_dir/cromite/build/cromite.gn_args\") $(cat ../../build_args.gni) skip_clangd_unsupported_options = true" out/clangd && \
-            $WORKSPACE/ninja/ninja -C $WORKSPACE/chromium/src/out/clangd -a chrome_public_apk \
-              -t compdb cc cxx objc objcxx >$WORKSPACE/chromium/src/out/clangd/compile_commands.json && \
-            /home/lg/working_dir/clangd_snapshot_20250518/bin/clangd-indexer --executor=all-TUs out/clangd/compile_commands.json >out/arm64/cromite.idx && \
-            rm -rf out/clangd
+      - name: Upload artifact Android arm
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cromite-android-arm
+          if-no-files-found: ignore
+          path: |
+            /home/lg/working_dir/chromium/src/out/arm/apks/ChromePublic.apk
+            /home/lg/working_dir/chromium/src/out/arm/gn_list
+            /home/lg/working_dir/chromium/src/out/arm/ninja_log_trace.html
+            /home/lg/working_dir/chromium/src/out/arm/RELEASE
