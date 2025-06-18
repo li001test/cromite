@@ -25,7 +25,7 @@ env:
 
 jobs:
   check_images:
-    runs-on: depot-ci
+    runs-on: ddepot-ubuntu-24.04-64
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
@@ -94,7 +94,7 @@ jobs:
           docker tag li001test/cromite-build:$VERSION-$CROMITE_SHA li001test/cromite-build:build
 
   build_arm64:
-    runs-on: depot-ci
+    runs-on: depot-ubuntu-24.04-64
     needs: check_images
     if: success() && (github.event.inputs.build == 'arm64' || github.event.inputs.build == 'all')
     timeout-minutes: 1440
@@ -219,7 +219,7 @@ jobs:
             /home/lg/working_dir/chromium/src/out/arm64/RELEASE
 
   build_arm:
-    runs-on: depot-ci
+    runs-on: depot-ubuntu-24.04-64
     needs: check_images
     if: success() && (github.event.inputs.build == 'arm' || github.event.inputs.build == 'all')
     timeout-minutes: 1440
