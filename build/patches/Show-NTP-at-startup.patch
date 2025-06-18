@@ -180,20 +180,20 @@ new file mode 100644
 +++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/sShowNtpAtStartupAndroid.java
 @@ -0,0 +1,33 @@
 +/*
-+    This file is part of Cromite.
++    This file is part of Iridium.
 +
-+    Cromite is free software: you can redistribute it and/or modify
++    Iridium is free software: you can redistribute it and/or modify
 +    it under the terms of the GNU General Public License as published by
 +    the Free Software Foundation, either version 3 of the License, or
 +    (at your option) any later version.
 +
-+    Cromite is distributed in the hope that it will be useful,
++    Iridium is distributed in the hope that it will be useful,
 +    but WITHOUT ANY WARRANTY; without even the implied warranty of
 +    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 +    GNU General Public License for more details.
 +
 +    You should have received a copy of the GNU General Public License
-+    along with Cromite. If not, see <https://www.gnu.org/licenses/>.
++    along with Iridium. If not, see <https://www.gnu.org/licenses/>.
 +*/
 +
 +package org.chromium.chrome.browser.flags.cromite;
@@ -420,7 +420,7 @@ new file mode 100644
 +
 +    {"enable-show-ntp-at-startup",
 +     "Show a NewTabPage at startup",
-+     "Enable showing a NewTabPage at startup after leaving Cromite for a while.", kOsAndroid,
++     "Enable showing a NewTabPage at startup after leaving Iridium for a while.", kOsAndroid,
 +     FEATURE_VALUE_TYPE(chrome::android::kShowNtpAtStartupAndroid)},
 +
 +#endif

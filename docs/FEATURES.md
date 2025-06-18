@@ -49,7 +49,7 @@ Also disable gamepadconnected and gamepaddisconnected, see https://jshelter.org/
 - (WINDOWS) PublicKeyCredential fingerprinting mitigations, see #1758
 - (DESKTOP) Disable Bluetooth API by default
 - (WINDOWS) Disable the use of non-standard and local fonts
-- (ANDROID) Replaces system fonts with a predefined set (https://github.com/uazo/cromite/issues/1829)
+- (ANDROID) Replaces system fonts with a predefined set (https://github.com/lingyicute/iridium/issues/1829)
 
 #### Tracking navigation
 - Enable network isolation features

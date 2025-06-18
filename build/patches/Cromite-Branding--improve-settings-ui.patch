@@ -1,6 +1,6 @@
 From: uazo <uazo@users.noreply.github.com>
 Date: Sat, 21 Sep 2024 15:32:02 +0000
-Subject: Cromite Branding: improve settings ui
+Subject: Iridium Branding: improve settings ui
 
 Modification to the settings ui with the aim of making it clearer.
 
@@ -10,10 +10,10 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../android/java/res/xml/main_preferences.xml |   4 +-
  .../res/xml/privacy_preferences_cromite.xml   | 191 ++++++++++++++++++
  .../privacy/settings/PrivacySettings.java     |  12 +-
- .../Cromite-settings-ui.grdp                  |  15 ++
+ .../Iridium-settings-ui.grdp                  |  15 ++
  5 files changed, 216 insertions(+), 8 deletions(-)
  create mode 100644 chrome/android/java/res/xml/privacy_preferences_cromite.xml
- create mode 100644 chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Cromite-settings-ui.grdp
+ create mode 100644 chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Iridium-settings-ui.grdp
 
 diff --git a/chrome/android/chrome_java_resources.gni b/chrome/android/chrome_java_resources.gni
 --- a/chrome/android/chrome_java_resources.gni
@@ -248,7 +248,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/setting
 --- a/chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/PrivacySettings.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/PrivacySettings.java
 @@ -188,7 +188,7 @@ public class PrivacySettings extends ChromeBaseSettingsFragment
-     public void onCreatePreferencesCromite(Bundle savedInstanceState, String rootKey) {
+     public void onCreatePreferencesIridium(Bundle savedInstanceState, String rootKey) {
          mPageTitle.set(getString(R.string.prefs_privacy_security));
  
 -        SettingsUtils.addPreferencesFromResource(this, R.xml.privacy_preferences);
@@ -273,10 +273,10 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/setting
          }
  
          mSearchSuggestions = (ChromeSwitchPreference) findPreference(PREF_SEARCH_SUGGESTIONS);
-diff --git a/chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Cromite-settings-ui.grdp b/chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Cromite-settings-ui.grdp
+diff --git a/chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Iridium-settings-ui.grdp b/chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Iridium-settings-ui.grdp
 new file mode 100644
 --- /dev/null
-+++ b/chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Cromite-settings-ui.grdp
++++ b/chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Iridium-settings-ui.grdp
 @@ -0,0 +1,15 @@
 +<?xml version="1.0" encoding="utf-8"?>
 +<grit-part>

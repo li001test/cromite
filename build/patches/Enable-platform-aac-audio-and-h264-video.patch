@@ -6,7 +6,7 @@ Allows the activation in android and windows of aac and
 h264 decoding via the s.o. libraries, replacing ffmpeg which does
 not have the necessary licences.
 
-Context: https://github.com/uazo/cromite/pull/856
+Context: https://github.com/lingyicute/iridium/pull/856
 License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
  .../Enable-platform-aac-audio-and-h264-video.inc    |  7 +++++++

@@ -73,14 +73,14 @@ enable_passthrough_audio_codecs = false
 use_relr_relocations=false
 
 # disabled the use of the context snapshot
-# see https://github.com/uazo/cromite/pull/317 for context
+# see https://github.com/lingyicute/iridium/pull/317 for context
 use_v8_context_snapshot = false
 
 # enable libjxl support by default
 enable_jxl_decoder = false
 
 # disable minikin engine
-# see https://github.com/uazo/cromite/issues/697
+# see https://github.com/lingyicute/iridium/issues/697
 use_minikin_hyphenation = false
 
 # disable automatic update of sync-related cookies
@@ -111,7 +111,7 @@ if (target_os == "android") {
   target_os = "android" # fix traffic annotation auditor
   #enable_kythe_annotations = true
 
-  chrome_public_manifest_package = "org.cromite.cromite"
+  chrome_public_manifest_package = "org.lyi.iridium"
   system_webview_package_name="org.cromite.webview" #"com.android.webview"
   system_webview_shell_package_name="org.cromite.webview_shell"
 

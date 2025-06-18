@@ -82,7 +82,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/accessibility/s
 +
 +        @Override
 +        public void setValue(boolean value) {
-+            CromiteNativeUtils.setFlagEnabled(ChromeFeatureList.SHOW_ALWAYS_CONTEXT_MENU_ON_LINKS,
++            IridiumNativeUtils.setFlagEnabled(ChromeFeatureList.SHOW_ALWAYS_CONTEXT_MENU_ON_LINKS,
 +                    "show-always-context-menu-on-links", value);
 +        }
 +    }

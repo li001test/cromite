@@ -161,7 +161,7 @@ diff --git a/components/search_engines/search_engine_choice/search_engine_choice
 -      kSearchEngineChoiceScreenSelectedEngineIndexHistogram,
 -      selected_engine_index,
 -      TemplateURLPrepopulateData::kMaxEeaPrepopulatedEngines);
-+  // do nothing in Cromite
++  // do nothing in Iridium
  }
  
  void RecordChoiceScreenPositionsCountryMismatch(bool has_mismatch) {

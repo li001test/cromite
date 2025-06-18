@@ -214,7 +214,7 @@ diff --git a/chrome/android/java/res/values/values.xml b/chrome/android/java/res
  
 +    <string name="adblock_on">Autoupdate enabled</string>
 +    <string name="adblock_off">Autoupdate disabled</string>
-+    <string name="adblock_help_url">https://github.com/uazo/cromite/blob/master/docs/BROMITE_LEGACY_ADBLOCK.md</string>
++    <string name="adblock_help_url">https://github.com/lingyicute/iridium/blob/master/docs/BROMITE_LEGACY_ADBLOCK.md</string>
 +
      <string name="proxy_title">Proxy configuration</string>
      <string name="proxy_url">chrome://proxy</string>
@@ -583,7 +583,7 @@ diff --git a/chrome/browser/flags/BUILD.gn b/chrome/browser/flags/BUILD.gn
 +++ b/chrome/browser/flags/BUILD.gn
 @@ -8,6 +8,7 @@ import("//third_party/jni_zero/jni_zero.gni")
  android_library("java") {
-   sources = [ "android/java/src/org/chromium/chrome/browser/flags/CromiteNativeUtils.java" ]
+   sources = [ "android/java/src/org/chromium/chrome/browser/flags/IridiumNativeUtils.java" ]
    sources += [
 +    "android/java/src/org/chromium/chrome/browser/flags/AdBlockNativeGateway.java",
      "android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java",
@@ -591,7 +591,7 @@ diff --git a/chrome/browser/flags/BUILD.gn b/chrome/browser/flags/BUILD.gn
      "android/java/src/org/chromium/chrome/browser/flags/ChromeSessionState.java",
 @@ -47,6 +48,7 @@ java_bromite_impl("java_cromite_cached_flags") {
  generate_jni("jni_headers") {
-   sources = [ "android/java/src/org/chromium/chrome/browser/flags/CromiteNativeUtils.java" ]
+   sources = [ "android/java/src/org/chromium/chrome/browser/flags/IridiumNativeUtils.java" ]
    sources += [
 +    "android/java/src/org/chromium/chrome/browser/flags/AdBlockNativeGateway.java",
      "android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureMap.java",

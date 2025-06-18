@@ -1,60 +1,60 @@
-<a href="https://github.com/uazo/cromite/releases/latest">
-  <img src="https://img.shields.io/github/v/release/uazo/cromite" alt="current Cromite release" title="current Cromite release" />
+<a href="https://github.com/lingyicute/iridium/releases/latest">
+  <img src="https://img.shields.io/github/v/release/lingyicute/iridium" alt="current Iridium release" title="current Iridium release" />
 </a>
 <br>
 
-[![Build Cromite](https://github.com/uazo/cromite/actions/workflows/build_cromite.yaml/badge.svg)](https://github.com/uazo/cromite/actions/workflows/build_cromite.yaml)
+[![Build Iridium](https://github.com/lingyicute/iridium/actions/workflows/build_cromite.yaml/badge.svg)](https://github.com/lingyicute/iridium/actions/workflows/build_cromite.yaml)
 
-# Cromite (a Bromite fork) - Take back your browser
+# Iridium (a Bromite fork) - Take back your browser
 
 <a href="https://www.cromite.org">
-  <img title="Cromite - take back your browser!" src="https://www.cromite.org/app_icon.png" width="96" alt="Bromite" />
+  <img title="Iridium - take back your browser!" src="https://www.cromite.org/app_icon.png" width="96" alt="Bromite" />
 </a>
 <br>
 
-Cromite is a [Chromium](https://www.chromium.org/Home) fork based on [Bromite](https://github.com/bromite/bromite) with built-in support for ad blocking and an eye for privacy.
+Iridium is a [Chromium](https://www.chromium.org/Home) fork based on [Bromite](https://github.com/bromite/bromite) with built-in support for ad blocking and an eye for privacy.
 
-Cromite is available for Android arm64-v8a, arm32-v7a and x86_64, Oreo and above (Minimum v8.0, API level 26), Windows and Linux 64bit.
+Iridium is available for Android arm64-v8a, arm32-v7a and x86_64, Oreo and above (Minimum v8.0, API level 26), Windows and Linux 64bit.
 
 # Goals
 
-Cromite's goal is to
+Iridium's goal is to
 - limit the features built into the browser that can be used as a platform for tracking users' habits, and, if it is not technically possible, disable them and leave it up to the user to choose whether to re-enable them
 - limit the close integration between the browser and its manufacturer
 - not let the excellent research work done by csagan5 with Bromite be lost
 
-In addition, Cromite would like to promote greater integration with other non-profit, open source browsers, encouraging closer collaboration with others, and attempt to integrate them directly into Chromium once they have reached an appropriate level of maturity.
+In addition, Iridium would like to promote greater integration with other non-profit, open source browsers, encouraging closer collaboration with others, and attempt to integrate them directly into Chromium once they have reached an appropriate level of maturity.
 
 # Privacy limitations
 
-Cromite's privacy features, including anti-fingerprinting mitigations (which are not comprehensive), **are not to be considered useful for journalists and people living in countries with freedom limitations**, please look at [Tor Browser](https://www.torproject.org/download/) in such cases (better to use the desktop version).
+Iridium's privacy features, including anti-fingerprinting mitigations (which are not comprehensive), **are not to be considered useful for journalists and people living in countries with freedom limitations**, please look at [Tor Browser](https://www.torproject.org/download/) in such cases (better to use the desktop version).
 Please note that this project is not free of bugs and that changing the behaviour of a browser can be risky and not without problems.
 
 # Docs
-- [Privacy Policy](https://github.com/uazo/cromite/blob/master/docs/PRIVACY_POLICY.md)
-- [Features](https://github.com/uazo/cromite/blob/master/docs/FEATURES.md)
-- [Faqs](https://github.com/uazo/cromite/blob/master/docs/FAQ.md)
-- [How to build](https://github.com/uazo/cromite/blob/master/docs/HOW_TO_BUILD.md)
-- [Patch list](https://github.com/uazo/cromite/blob/master/docs/PATCHES.md)
+- [Privacy Policy](https://github.com/lingyicute/iridium/blob/master/docs/PRIVACY_POLICY.md)
+- [Features](https://github.com/lingyicute/iridium/blob/master/docs/FEATURES.md)
+- [Faqs](https://github.com/lingyicute/iridium/blob/master/docs/FAQ.md)
+- [How to build](https://github.com/lingyicute/iridium/blob/master/docs/HOW_TO_BUILD.md)
+- [Patch list](https://github.com/lingyicute/iridium/blob/master/docs/PATCHES.md)
 
 # Releases
 
-All built versions are available as [releases](https://github.com/uazo/cromite/releases).
+All built versions are available as [releases](https://github.com/lingyicute/iridium/releases).
 
-Cromite is currently built for ARM, ARM64, Android x86, Windows x64 and Linux.
+Iridium is currently built for ARM, ARM64, Android x86, Windows x64 and Linux.
 
 The following files will be present for each release:
 
-#### Cromite apk for android:
-- [arm64_ChromePublic.apk](https://github.com/uazo/cromite/releases/latest/download/arm64_ChromePublic.apk)
-- [arm_ChromePublic.apk](https://github.com/uazo/cromite/releases/latest/download/arm_ChromePublic.apk)
-- [x64_ChromePublic.apk](https://github.com/uazo/cromite/releases/latest/download/x64_ChromePublic.apk)
+#### Iridium apk for android:
+- [arm64_ChromePublic.apk](https://github.com/lingyicute/iridium/releases/latest/download/arm64_ChromePublic.apk)
+- [arm_ChromePublic.apk](https://github.com/lingyicute/iridium/releases/latest/download/arm_ChromePublic.apk)
+- [x64_ChromePublic.apk](https://github.com/lingyicute/iridium/releases/latest/download/x64_ChromePublic.apk)
 
 #### Linux package:
-- [chrome-lin64.tar.gz](https://github.com/uazo/cromite/releases/latest/download/chrome-lin64.tar.gz)
+- [chrome-lin64.tar.gz](https://github.com/lingyicute/iridium/releases/latest/download/chrome-lin64.tar.gz)
 
 #### Windows package:
-- [chrome-win.zip](https://github.com/uazo/cromite/releases/latest/download/chrome-win.zip)
+- [chrome-win.zip](https://github.com/lingyicute/iridium/releases/latest/download/chrome-win.zip)
 
 #### Debugging symbols and proguard file for java stacktrace deobfuscation
 - x64_ChromePublic.apk.mapping
@@ -67,9 +67,9 @@ The following files will be present for each release:
 #### Chrlauncher autoupdate file:
 - updateurl.txt
 
-Additional files are also available: please note that these files are created by an [additional build](https://github.com/uazo/cromite/actions/workflows/build_additional_targets.yaml) separate from the release process, and therefore may not be immediately available.
+Additional files are also available: please note that these files are created by an [additional build](https://github.com/lingyicute/iridium/actions/workflows/build_additional_targets.yaml) separate from the release process, and therefore may not be immediately available.
 
-#### Cromite System WebView apk for android:
+#### Iridium System WebView apk for android:
 - arm64_SystemWebView.apk
 - x64_SystemWebView.apk
 
@@ -101,12 +101,12 @@ You will be asked whether you want to activate the functionality during the firs
 [chrlauncher]
 
 # Custom Chromium update URL (string):
-ChromiumUpdateUrl=https://github.com/uazo/cromite/releases/latest/download/updateurl.txt
+ChromiumUpdateUrl=https://github.com/lingyicute/iridium/releases/latest/download/updateurl.txt
 
 # Command line for Chromium (string):
 # note --user-data-dir= works better if path is absolute
 # See here: http://peter.sh/experiments/chromium-command-line-switches/
-ChromiumCommandLine=--user-data-dir="C:\Users\<my user>\AppData\Local\Cromite\User Data" --no-default-browser-check
+ChromiumCommandLine=--user-data-dir="C:\Users\<my user>\AppData\Local\Iridium\User Data" --no-default-browser-check
 
 # to enable full logging in c:\temp\log.txt (daily rotate, no automatic deletion)
 # ChromiumCommandLine=--enable-logging --v=0 --log-file=C:\temp\log.txt --user-data-dir=".\User Data" --no-default-browser-check
@@ -135,9 +135,9 @@ you can activate (highly recommended) the 'RendererAppContainer' flag from the c
 ```
 
 ### Auto-update setup for linux
-working in progress in https://github.com/uazo/cromite/issues/771
+working in progress in https://github.com/lingyicute/iridium/issues/771
 
-### Making Cromite work in Ubuntu 24.04 and its derivatives (kubuntu, etc)
+### Making Iridium work in Ubuntu 24.04 and its derivatives (kubuntu, etc)
 This happens because, starting with Ubuntu 24.04, Apparmor
 restricts the use of unprivileged user namespaces. To fix this, you have several options:
 #### 1. Creating an apparmor profile for cromite
@@ -166,9 +166,9 @@ Please submit issues following the issue template; beware that GitHub does not d
 
 Patches are welcome and accepted if they match the project goals.
 
-If you want to help me, [here](https://github.com/uazo/cromite/blob/master/docs/HELP_ME_PLEASE.md) is the list of things I would need.
+If you want to help me, [here](https://github.com/lingyicute/iridium/blob/master/docs/HELP_ME_PLEASE.md) is the list of things I would need.
 
-For any usage or development discussion please use GitHub Discussions: https://github.com/uazo/cromite/discussions
+For any usage or development discussion please use GitHub Discussions: https://github.com/lingyicute/iridium/discussions
 
 # Credits
 
@@ -195,7 +195,7 @@ Historical fundraisings links:
 
 # License
 
-Cromite is published under [GNU GPL v3](./LICENSE).
+Iridium is published under [GNU GPL v3](./LICENSE).
 The patches published as part of the Bromite project are released under GNU GPL v3 only.
-Cromite specific patches are under the GNU GPL-2+ licence.
+Iridium specific patches are under the GNU GPL-2+ licence.
 Each individual patch contains specific information on the licence used.

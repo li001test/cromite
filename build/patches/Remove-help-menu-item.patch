@@ -268,7 +268,7 @@ diff --git a/chrome/browser/ui/chrome_pages.cc b/chrome/browser/ui/chrome_pages.
  // is created.
  void ShowHelpImpl(Browser* browser, Profile* profile, HelpSource source) {
 +  if (source == chrome::HELP_SOURCE_WEBUI) {
-+    GURL url = GURL("https://github.com/uazo/cromite/issues");
++    GURL url = GURL("https://github.com/lingyicute/iridium/issues");
 +    if (browser) {
 +      ShowSingletonTab(browser, url);
 +    } else {

@@ -1,8 +1,8 @@
-# Cromite AdBlock engine
+# Iridium AdBlock engine
 
 ## Modified version of Adblock plus integrated in cromite
 
-Cromite uses a modified version of adblock plus.
+Iridium uses a modified version of adblock plus.
 
 Some adblock plus rules cannot be used:
 - removed support for header and csp filter option
@@ -19,7 +19,7 @@ All default filters are downloaded from www.cromite.org/filters urls. You can en
 
 ### Update mechanism
 
-The Cromite AdBlock Update Service checks every day if new filters are published.
+The Iridium AdBlock Update Service checks every day if new filters are published.
 
 www.cromite.org does not record any logs.
 

@@ -16,7 +16,7 @@ Subject: bromite build utils
  chrome/browser/flags/BUILD.gn                 |  10 +-
  .../flags/android/cromite_native_utils.cc     |  92 +++++++++++++++
  .../flags/android/cromite_native_utils.h      |  14 +++
- .../browser/flags/CromiteNativeUtils.java     |  46 ++++++++
+ .../browser/flags/IridiumNativeUtils.java     |  46 ++++++++
  mojo/public/tools/mojom/mojom_parser.py       |  22 +++-
  tools/grit/grit/grd_reader.py                 |  27 ++++-
  tools/grit/preprocess_if_expr.py              |  32 +++++-
@@ -28,7 +28,7 @@ Subject: bromite build utils
  create mode 100644 build/bromite/gyp/java_bromite_impl.pydeps
  create mode 100755 chrome/browser/flags/android/cromite_native_utils.cc
  create mode 100755 chrome/browser/flags/android/cromite_native_utils.h
- create mode 100755 chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/CromiteNativeUtils.java
+ create mode 100755 chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/IridiumNativeUtils.java
 
 diff --git a/build/android/gyp/java_cpp_enum.py b/build/android/gyp/java_cpp_enum.py
 --- a/build/android/gyp/java_cpp_enum.py
@@ -463,7 +463,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/accessibility/s
  import org.chromium.content_public.browser.BrowserContextHandle;
  
 +import org.chromium.chrome.browser.flags.ChromeFeatureList;
-+import org.chromium.chrome.browser.flags.CromiteNativeUtils;
++import org.chromium.chrome.browser.flags.IridiumNativeUtils;
 +import org.chromium.chrome.browser.preferences.ChromePreferenceKeys;
 +import org.chromium.chrome.browser.preferences.ChromeSharedPreferences;
 +
@@ -478,7 +478,7 @@ diff --git a/chrome/browser/flags/BUILD.gn b/chrome/browser/flags/BUILD.gn
  
  android_library("java") {
 -  sources = [
-+  sources = [ "android/java/src/org/chromium/chrome/browser/flags/CromiteNativeUtils.java" ]
++  sources = [ "android/java/src/org/chromium/chrome/browser/flags/IridiumNativeUtils.java" ]
 +  sources += [
      "android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java",
      "android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureMap.java",
@@ -488,7 +488,7 @@ diff --git a/chrome/browser/flags/BUILD.gn b/chrome/browser/flags/BUILD.gn
  
  generate_jni("jni_headers") {
 -  sources = [
-+  sources = [ "android/java/src/org/chromium/chrome/browser/flags/CromiteNativeUtils.java" ]
++  sources = [ "android/java/src/org/chromium/chrome/browser/flags/IridiumNativeUtils.java" ]
 +  sources += [
      "android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureMap.java",
      "android/java/src/org/chromium/chrome/browser/flags/ChromeSessionState.java",
@@ -513,14 +513,14 @@ new file mode 100755
 +
 +#include "chrome/browser/browser_process.h"
 +#include "chrome/browser/about_flags.h"
-+#include "chrome/browser/flags/jni_headers/CromiteNativeUtils_jni.h"
++#include "chrome/browser/flags/jni_headers/IridiumNativeUtils_jni.h"
 +#include "components/webui/flags/pref_service_flags_storage.h"
 +
 +#include "base/android/jni_string.h"
 +
 +using base::android::JavaParamRef;
 +
-+static void JNI_CromiteNativeUtils_SetEnabled(JNIEnv* env,
++static void JNI_IridiumNativeUtils_SetEnabled(JNIEnv* env,
 +    const JavaParamRef<jstring>& featureName, jboolean isEnabled) {
 +  flags_ui::PrefServiceFlagsStorage flags_storage(
 +      g_browser_process->local_state());
@@ -563,7 +563,7 @@ new file mode 100755
 +  flags_storage.CommitPendingWrites();
 +}
 +
-+static jboolean JNI_CromiteNativeUtils_IsFlagEnabled(JNIEnv* env,
++static jboolean JNI_IridiumNativeUtils_IsFlagEnabled(JNIEnv* env,
 +    const JavaParamRef<jstring>& featureName) {
 +  auto internal_name = base::android::ConvertJavaStringToUTF8(env, featureName);
 +
@@ -620,10 +620,10 @@ new file mode 100755
 +}  // namespace chrome
 +
 +#endif  // CHROME_BROWSER_FLAGS_ANDROID_CROMITE_NATIVE_UTILS_H_
-diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/CromiteNativeUtils.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/CromiteNativeUtils.java
+diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/IridiumNativeUtils.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/IridiumNativeUtils.java
 new file mode 100755
 --- /dev/null
-+++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/CromiteNativeUtils.java
++++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/IridiumNativeUtils.java
 @@ -0,0 +1,46 @@
 +package org.chromium.chrome.browser.flags;
 +
@@ -634,7 +634,7 @@ new file mode 100755
 +import org.jni_zero.CalledByNative;
 +import org.jni_zero.NativeMethods;
 +
-+public class CromiteNativeUtils {
++public class IridiumNativeUtils {
 +    /**
 +     * Allows the modification of the flag value on the java side.
 +     * Currently only the feature flag with on / off values is managed.
@@ -650,7 +650,7 @@ new file mode 100755
 +    }
 +
 +    public static void setFlagEnabled(String featureName, String flagName, Boolean newValue) {
-+        CromiteNativeUtilsJni.get().setEnabled(flagName, newValue);
++        IridiumNativeUtilsJni.get().setEnabled(flagName, newValue);
 +
 +        if (!featureName.isEmpty()) {
 +            CachedFlag cachedFlag = ChromeFeatureList.sAllCachedFlags.get(featureName);
@@ -662,7 +662,7 @@ new file mode 100755
 +    }
 +
 +    public static boolean isFlagEnabled(String featureName) {
-+        return CromiteNativeUtilsJni.get().isFlagEnabled(featureName);
++        return IridiumNativeUtilsJni.get().isFlagEnabled(featureName);
 +    }
 +
 +    @NativeMethods

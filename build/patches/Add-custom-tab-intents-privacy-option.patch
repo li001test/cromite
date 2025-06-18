@@ -203,7 +203,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/setting
 +    private ChromeSwitchPreference openExternalLinksPref;
 +
      @Override
-     public void onCreatePreferencesCromite(Bundle savedInstanceState, String rootKey) {
+     public void onCreatePreferencesIridium(Bundle savedInstanceState, String rootKey) {
          mPageTitle.set(getString(R.string.prefs_privacy_security));
 @@ -379,6 +391,9 @@ public class PrivacySettings extends ChromeBaseSettingsFragment
                  new SpanApplier.SpanInfo("<link2>", "</link2>", servicesLink));
@@ -324,7 +324,7 @@ new file mode 100644
 +        Allow custom tab intents.
 +    </message>
 +    <message name="IDS_ALLOW_CUSTOM_TAB_INTENTS_SUMMARY" desc="Summary text for 'Allow custom tab intents' settings-privacy option.">
-+        Allow applications to open custom tab intents, similar to webview. To work, Cromite must be set as the default browser.
++        Allow applications to open custom tab intents, similar to webview. To work, Iridium must be set as the default browser.
 +    </message>
 +
 +    <message name="IDS_USES_SEPARATE_STORAGEPARTITION_FOR_CCT_TITLE" desc="Text for 'Use ephemeral mode for CCT' settings-privacy option.">

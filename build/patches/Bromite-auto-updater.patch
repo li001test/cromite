@@ -13,7 +13,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  chrome/android/chrome_java_sources.gni        |   2 +
  .../java/res/xml/about_chrome_preferences.xml |   5 +
  .../about_settings/AboutChromeSettings.java   |  28 +-
- .../omaha/CromiteUpdateStatusProvider.java    |  42 +++
+ .../omaha/IridiumUpdateStatusProvider.java    |  42 +++
  .../chrome/browser/omaha/OmahaBase.java       |   7 +-
  .../browser/omaha/UpdateMenuItemHelper.java   |  89 +++++-
  .../inline/BromiteInlineUpdateController.java | 285 ++++++++++++++++++
@@ -42,7 +42,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../Bromite-auto-updater.inc                  |   3 +
  .../Bromite-auto-updater.inc                  |   1 +
  33 files changed, 1240 insertions(+), 95 deletions(-)
- create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/omaha/CromiteUpdateStatusProvider.java
+ create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/omaha/IridiumUpdateStatusProvider.java
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/omaha/inline/BromiteInlineUpdateController.java
  create mode 100644 chrome/browser/endpoint_fetcher/BUILD.gn
  create mode 100644 chrome/browser/endpoint_fetcher/DEPS
@@ -87,7 +87,7 @@ diff --git a/chrome/android/chrome_java_sources.gni b/chrome/android/chrome_java
    "java/src/org/chromium/chrome/browser/omaha/OmahaBase.java",
    "java/src/org/chromium/chrome/browser/omaha/OmahaDelegate.java",
    "java/src/org/chromium/chrome/browser/omaha/OmahaDelegateBase.java",
-+  "java/src/org/chromium/chrome/browser/omaha/CromiteUpdateStatusProvider.java",
++  "java/src/org/chromium/chrome/browser/omaha/IridiumUpdateStatusProvider.java",
 +  "java/src/org/chromium/chrome/browser/omaha/inline/BromiteInlineUpdateController.java",
    "java/src/org/chromium/chrome/browser/omaha/OmahaService.java",
    "java/src/org/chromium/chrome/browser/omaha/RequestData.java",
@@ -164,10 +164,10 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/about_settings/
      @Override
      public @SettingsFragment.AnimationType int getAnimationType() {
          return SettingsFragment.AnimationType.PROPERTY;
-diff --git a/chrome/android/java/src/org/chromium/chrome/browser/omaha/CromiteUpdateStatusProvider.java b/chrome/android/java/src/org/chromium/chrome/browser/omaha/CromiteUpdateStatusProvider.java
+diff --git a/chrome/android/java/src/org/chromium/chrome/browser/omaha/IridiumUpdateStatusProvider.java b/chrome/android/java/src/org/chromium/chrome/browser/omaha/IridiumUpdateStatusProvider.java
 new file mode 100644
 --- /dev/null
-+++ b/chrome/android/java/src/org/chromium/chrome/browser/omaha/CromiteUpdateStatusProvider.java
++++ b/chrome/android/java/src/org/chromium/chrome/browser/omaha/IridiumUpdateStatusProvider.java
 @@ -0,0 +1,42 @@
 +package org.chromium.chrome.browser.omaha;
 +
@@ -181,12 +181,12 @@ new file mode 100644
 +import org.chromium.chrome.browser.omaha.UpdateStatusProvider;
 +import org.chromium.chrome.browser.omaha.inline.BromiteInlineUpdateController;
 +
-+public class CromiteUpdateStatusProvider extends UpdateStatusProvider {
++public class IridiumUpdateStatusProvider extends UpdateStatusProvider {
 +    private static final class LazyHolder {
-+        private static final UpdateStatusProvider INSTANCE = new CromiteUpdateStatusProvider();
++        private static final UpdateStatusProvider INSTANCE = new IridiumUpdateStatusProvider();
 +    }
 +
-+    private CromiteUpdateStatusProvider() {
++    private IridiumUpdateStatusProvider() {
 +        super(new BromiteInlineUpdateController());
 +    }
 +
@@ -250,7 +250,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/omaha/UpdateMen
  import org.chromium.chrome.R;
  import org.chromium.chrome.browser.omaha.UpdateStatusProvider.UpdateState;
  import org.chromium.chrome.browser.omaha.UpdateStatusProvider.UpdateStatus;
-+import org.chromium.chrome.browser.omaha.CromiteUpdateStatusProvider;
++import org.chromium.chrome.browser.omaha.IridiumUpdateStatusProvider;
  import org.chromium.chrome.browser.preferences.Pref;
  import org.chromium.chrome.browser.profiles.Profile;
  import org.chromium.chrome.browser.profiles.ProfileKeyedMap;
@@ -259,7 +259,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/omaha/UpdateMen
          }
  
 -        UpdateStatusProvider.getInstance().addObserver(mUpdateCallback);
-+        CromiteUpdateStatusProvider.getInstance().addObserver(mUpdateCallback);
++        IridiumUpdateStatusProvider.getInstance().addObserver(mUpdateCallback);
      }
  
      /** Unregisters {@code observer} from menu state changes. */
@@ -268,7 +268,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/omaha/UpdateMen
  
                  try {
 -                    UpdateStatusProvider.getInstance()
-+                    CromiteUpdateStatusProvider.getInstance()
++                    IridiumUpdateStatusProvider.getInstance()
                              .startIntentUpdate(activity, /* newTask= */ false);
                  } catch (ActivityNotFoundException e) {
                      Log.e(TAG, "Failed to launch Activity for: %s", mStatus.updateUrl);
@@ -277,13 +277,13 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/omaha/UpdateMen
 +            case UpdateState.VULNERABLE_VERSION:
 +            // Intentional fall through.
 +            case UpdateState.INLINE_UPDATE_AVAILABLE:
-+                CromiteUpdateStatusProvider.getInstance().startInlineUpdate(activity);
++                IridiumUpdateStatusProvider.getInstance().startInlineUpdate(activity);
 +                break;
 +            case UpdateState.INLINE_UPDATE_READY:
-+                CromiteUpdateStatusProvider.getInstance().finishInlineUpdate();
++                IridiumUpdateStatusProvider.getInstance().finishInlineUpdate();
 +                break;
 +            case UpdateState.INLINE_UPDATE_FAILED:
-+                CromiteUpdateStatusProvider.getInstance().retryInlineUpdate(activity);
++                IridiumUpdateStatusProvider.getInstance().retryInlineUpdate(activity);
 +                break;
              case UpdateState.UNSUPPORTED_OS_VERSION:
                  // Intentional fall through.
@@ -297,7 +297,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/omaha/UpdateMen
          if (mStatus.updateState != UpdateState.UNSUPPORTED_OS_VERSION) return;
  
 -        UpdateStatusProvider.getInstance().updateLatestUnsupportedVersion();
-+        CromiteUpdateStatusProvider.getInstance().updateLatestUnsupportedVersion();
++        IridiumUpdateStatusProvider.getInstance().updateLatestUnsupportedVersion();
      }
  
      private void handleStateChanged() {

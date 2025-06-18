@@ -1,9 +1,9 @@
 From: uazo <uazo@users.noreply.github.com>
 Date: Thu, 29 Sep 2022 11:27:35 +0000
-Subject: Eyeo Adblock for Cromite
+Subject: Eyeo Adblock for Iridium
 
 Change the normal behaviour of Eyeo Chromium SDK to
-suit Cromite logic.
+suit Iridium logic.
 ---
  .../android/java/res/xml/main_preferences.xml |   19 +-
  .../adblock_chrome_content_browser_client.cc  |    6 +
@@ -2152,20 +2152,20 @@ new file mode 100644
 +++ b/components/adblock/content/browser/adblock_blocking_page.cc
 @@ -0,0 +1,182 @@
 +/*
-+    This file is part of Cromite.
++    This file is part of Iridium.
 +
-+    Cromite is free software: you can redistribute it and/or modify
++    Iridium is free software: you can redistribute it and/or modify
 +    it under the terms of the GNU General Public License as published by
 +    the Free Software Foundation, either version 2 of the License, or
 +    (at your option) any later version.
 +
-+    Cromite is distributed in the hope that it will be useful,
++    Iridium is distributed in the hope that it will be useful,
 +    but WITHOUT ANY WARRANTY; without even the implied warranty of
 +    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 +    GNU General Public License for more details.
 +
 +    You should have received a copy of the GNU General Public License
-+    along with Cromite. If not, see <https://www.gnu.org/licenses/>.
++    along with Iridium. If not, see <https://www.gnu.org/licenses/>.
 +*/
 +
 +#include "components/adblock/content/browser/adblock_blocking_page.h"
@@ -2339,20 +2339,20 @@ new file mode 100644
 +++ b/components/adblock/content/browser/adblock_blocking_page.h
 @@ -0,0 +1,75 @@
 +/*
-+    This file is part of Cromite.
++    This file is part of Iridium.
 +
-+    Cromite is free software: you can redistribute it and/or modify
++    Iridium is free software: you can redistribute it and/or modify
 +    it under the terms of the GNU General Public License as published by
 +    the Free Software Foundation, either version 2 of the License, or
 +    (at your option) any later version.
 +
-+    Cromite is distributed in the hope that it will be useful,
++    Iridium is distributed in the hope that it will be useful,
 +    but WITHOUT ANY WARRANTY; without even the implied warranty of
 +    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 +    GNU General Public License for more details.
 +
 +    You should have received a copy of the GNU General Public License
-+    along with Cromite. If not, see <https://www.gnu.org/licenses/>.
++    along with Iridium. If not, see <https://www.gnu.org/licenses/>.
 +*/
 +
 +#ifndef COMPONENTS_ADBLOCK_CONTENT_BROWSER_ADBLOCK_BLOCKING_PAGE_H_
@@ -11802,8 +11802,8 @@ diff --git a/components/adblock/core/subscription/subscription_config.cc b/compo
 -       SubscriptionPrivilegedFilterStatus::Allowed},
 +       SubscriptionFirstRunBehavior::SubscribeAtFirstRun,
 +       SubscriptionPrivilegedFilterStatus::AllowedAndChecked},
-+      {GURL("https://raw.githubusercontent.com/uazo/cromite/master/tools/filters/experimental-cromite-filters.txt"),
-+       "Cromite experimental filters",
++      {GURL("https://raw.githubusercontent.com/lingyicute/iridium/master/tools/filters/experimental-cromite-filters.txt"),
++       "Iridium experimental filters",
 +       {},
 +       SubscriptionUiVisibility::Visible,
 +       SubscriptionFirstRunBehavior::SubscribeAtFirstRun,

@@ -1224,7 +1224,7 @@ diff --git a/third_party/skia/src/ports/SkFontMgr_android.cpp b/third_party/skia
      }
  
 -    sk_sp<SkTypeface_AndroidSystem> matchAStyle(const SkFontStyle& pattern) {
-+    sk_sp<SkTypeface_AndroidSystemCustom> matchCromiteStyle(const SkFontStyle& pattern) {
++    sk_sp<SkTypeface_AndroidSystemCustom> matchIridiumStyle(const SkFontStyle& pattern) {
 +        return sk_sp_static_cast<SkTypeface_AndroidSystemCustom>(this->matchStyleCSS3(pattern));
 +    }
 +    sk_sp<SkTypeface_AndroidSystem> matchAndroidStyle(const SkFontStyle& pattern) {
@@ -1291,7 +1291,7 @@ diff --git a/third_party/skia/src/ports/SkFontMgr_android.cpp b/third_party/skia
              }
 -            sk_sp<SkTypeface_AndroidSystem> face(family->matchAStyle(style));
 +            if (custom_) {
-+                sk_sp<SkTypeface_AndroidSystemCustom> face(family->matchCromiteStyle(style));
++                sk_sp<SkTypeface_AndroidSystemCustom> face(family->matchIridiumStyle(style));
 +
 +                if (!langTag.isEmpty() &&
 +                    std::none_of(face->fLang.begin(), face->fLang.end(), [&](const SkLanguage& lang){
