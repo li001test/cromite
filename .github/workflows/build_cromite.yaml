@@ -25,7 +25,7 @@ env:
 
 jobs:
   check_images:
-    runs-on: ddepot-ubuntu-24.04-64
+    runs-on: depot-ubuntu-24.04-64
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
